@@ -1,0 +1,96 @@
+\documentclass[11pt,fleqn,twoside]{article}
+\usepackage{makeidx}
+\makeindex
+\usepackage{palatino} %or {times} etc
+\usepackage{plain} %bibliography style 
+\usepackage{amsmath} %math fonts - just in case
+\usepackage{amsfonts} %math fonts
+\usepackage{amssymb} %math fonts
+\usepackage{lastpage} %for footer page numbers
+\usepackage{fancyhdr} %header and footer package
+\usepackage{mmpv2} 
+\usepackage{url}
+
+% the following packages are used for citations - You only need to include one. 
+%
+% Use the cite package if you are using the numeric style (e.g. IEEEannot). 
+% Use the natbib package if you are using the author-date style (e.g. authordate2annot). 
+% Only use one of these and comment out the other one. 
+\usepackage{cite}
+%\usepackage{natbib}
+
+\begin{document}
+
+\name{Theodoros Nikopoulos-Exintaris}
+\userid{thn2}
+\projecttitle{Private Eye: An ANN Computer Vision API}
+\projecttitlememoir{Private Eye: An ANN Computer Vision API} %same as the project title or abridged version for page header
+\reporttitle{Outline Project Specification}
+\version{0.1}
+\docstatus{Draft}
+\modulecode{CS39440}
+\degreeschemecode{GG47}
+\degreeschemename{Computer Science and Artificial Inteligence}
+\supervisor{Chuan Lu} % e.g. Neil Taylor
+\supervisorid{cul}
+\wordcount{}
+
+%optional - comment out next line to use current date for the document
+%\documentdate{} 
+\mmp
+
+\setcounter{tocdepth}{3} %set required number of level in table of contents
+
+
+%==============================================================================
+\section{Project description}
+%==============================================================================
+This project is concerned with the use of deep neural networks for computer vision tasks. There is a number of proposed datasets that can be used in this project. Including medical imagery from scans, banks of pictures mined from websites as well as artwork. The exact specification here is subject to change as we investigate applications for our neural network and focus on particular interesting problems over the first few weeks of this project.
+
+The task will likely inveolve a report centered around comparing performance of convolutional neural networks for a variety of vision tasks as well as a demonstration of our final neural network with some interesting simple applications as a proof of concept. 
+
+%==============================================================================
+\section{Proposed tasks}
+%==============================================================================
+Investigate available APIs for the implementation of deep neural networks, and how to structure my neural network for the proposed project.
+This will likely involve Google's TensorFlow framework and Convolutional Neural networks. Some other considerations are Theano and Keras for this purpose or a combination of these.
+Some of our data will already have been used as part of papers with other machine learning or computer vision methods so part of the task might involve comparing our solution's performance against other mainstream computer vision methodologies.
+
+We will scale up our datasets through continuous itteration starting with simple problems like handwriting recognition moving on to more complex tasks as time allows.
+
+Write a report on the effort undertaken during this project and experimental results including benchmarking against existing solutions where possible.
+
+
+%==============================================================================
+\section{Project deliverables}
+%==============================================================================
+A neural network implementation for computer vision either used for feature extraction or used for image classification.
+
+An API for developing applications using our neural network will be developed to enable us to demonstrate the project. Some demos will also need to be delivered, probaly involving simple websites or even possibly file search plugins for searching through image albums.
+
+A detailed report about the project including documentation of decisions taken during the project, as well as performance and test data for the solution.
+
+%
+% Start to comment out / remove the following lines. They are only provided for instruction for this example template.  You don't need the following section title, because it will be added as part of the bibliography section. 
+%
+%==============================================================================
+\section*{}
+%==============================================================================
+%
+
+
+
+\nocite{*} % include everything from the bibliography, irrespective of whether it has been referenced.
+
+% the following line is included so that the bibliography is also shown in the table of contents. There is the possibility that this is added to the previous page for the bibliography. To address this, a newline is added so that it appears on the first page for the bibliography. 
+\newpage
+\addcontentsline{toc}{section}{Initial (incomplete) Annotated Bibliography} 
+
+%
+% example of including an annotated bibliography. The current style is an author date one. If you want to change, comment out the line and uncomment the subsequent line. You should also modify the packages included at the top (see the notes earlier in the file) and then trash your aux files and re-run. 
+%\bibliographystyle{authordate2annot}
+\bibliographystyle{IEEEannot}
+\renewcommand{\refname}{Annotated Bibliography}  % if you put text into the final {} on this line, you will get an extra title, e.g. References. This isn't necessary for the outline project specification. 
+\bibliography{mmp} % References file
+
+\end{document}

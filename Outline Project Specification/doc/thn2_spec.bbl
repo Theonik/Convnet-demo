@@ -1,0 +1,33 @@
+\begin{thebibliography}{1}
+\providecommand{\url}[1]{#1}
+\csname url@rmstyle\endcsname
+\providecommand{\newblock}{\relax}
+\providecommand{\bibinfo}[2]{#2}
+\providecommand\BIBentrySTDinterwordspacing{\spaceskip=0pt\relax}
+\providecommand\BIBentryALTinterwordstretchfactor{4}
+\providecommand\BIBentryALTinterwordspacing{\spaceskip=\fontdimen2\font plus
+\BIBentryALTinterwordstretchfactor\fontdimen3\font minus
+  \fontdimen4\font\relax}
+\providecommand\BIBforeignlanguage[2]{{%
+\expandafter\ifx\csname l@#1\endcsname\relax
+\typeout{** WARNING: IEEEtran.bst: No hyphenation pattern has been}%
+\typeout{** loaded for the language `#1'. Using the pattern for}%
+\typeout{** the default language instead.}%
+\else
+\language=\csname l@#1\endcsname
+\fi
+#2}}
+
+\bibitem{KeironsPaper}
+R.~N. Keiron~O'Shea, ``An introduction to convolutional neural networks,''
+  \emph{arXivaij}, vol. 1511.08458, 2015.
+ \begin{quotation}\noindent Helpful primer into convolutional neural networks
+  \end{quotation}
+
+\bibitem{TensorFlow}
+Various, ``Tensor flow,'' \url{https://www.tensorflow.org/}, Feb. 2016,
+  accessed February 2016.
+ \begin{quotation}\noindent Site for Google's Tensor Flow machine learning
+  framework \end{quotation}
+
+\end{thebibliography}

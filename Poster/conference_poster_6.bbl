@@ -1,0 +1,26 @@
+\begin{thebibliography}{1}
+
+\bibitem{KeironsPaper}
+Ryan~Nash Keiron~O'Shea.
+\newblock An introduction to convolutional neural networks.
+\newblock {\em arXivaij}, 1511.08458, 2015.
+
+\bibitem{CIFAR}
+Various.
+\newblock Cifar.
+\newblock \url{http://www.cs.toronto.edu/~kriz/cifar.html}, February 2016.
+\newblock Accessed February 2016.
+
+\bibitem{MNIST}
+Various.
+\newblock Mnist.
+\newblock \url{http://yann.lecun.com/exdb/mnist/}, February 2016.
+\newblock Accessed February 2016.
+
+\bibitem{TensorFlow}
+Various.
+\newblock Tensor flow.
+\newblock \url{https://www.tensorflow.org/}, February 2016.
+\newblock Accessed February 2016.
+
+\end{thebibliography}
