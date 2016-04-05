@@ -26,11 +26,12 @@ def load_data():
     num_classes = len(ll)
 
     if greyscale:
-        train_data = utils.convert_set_to_greyscale(train_data)
-        test_data =  utils.convert_set_to_greyscale(test_data)
+        train_data = utils.convert_set_to_greyscale(train_data, 2)
+        test_data =  utils.convert_set_to_greyscale(test_data, 2)
+    else:
+        train_data = train_data.astype('float32') / 255
+        test_data = test_data.astype('float32') / 255
 
-    train_data = train_data.astype('float32') / 255
-    test_data = test_data.astype('float32') / 255
     val_data = None
     val_labels = None
 
@@ -64,7 +65,7 @@ def create_cnn(channels, rows, columns, num_classes):
     model.add(Activation('relu'))
     model.add(Convolution2D(8, 3, 3))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D())
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), border_mode='valid', dim_ordering='th'))
     model.add(Dropout(0.2))
 
     # LAYER TWO
@@ -73,7 +74,7 @@ def create_cnn(channels, rows, columns, num_classes):
     model.add(Activation('relu'))
     model.add(Convolution2D(14, 3, 3))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D())
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), border_mode='valid', dim_ordering='th'))
     model.add(Dropout(0.2))
 
     # OUTPUT LAYER
@@ -86,7 +87,7 @@ def create_cnn(channels, rows, columns, num_classes):
     model.add(Dense(num_classes)) # The number of neurons on the output layer is always equal to the number of classes.
     model.add(Activation("softmax")) # Softmax is used for multi-class classification, sigmoid is best used for binary tasks.
 
-    optimiser = SGD(lr=0.01, momentum=0.9, decay=1e-8, nesterov=True)
+    optimiser = SGD(lr=0.01, momentum=0.90, decay=1e-8, nesterov=True)
 
     model.compile(loss="categorical_crossentropy",
                   optimizer=optimiser
