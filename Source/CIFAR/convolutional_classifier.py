@@ -47,7 +47,6 @@ def load_data():
         val_labels = np_utils.to_categorical(val_labels, num_classes)
 
     train_labels = np_utils.to_categorical(train_labels, num_classes)
-    #test_labels = np_utils.to_categorical(test_labels, num_classes)
 
     return train_data, train_labels, val_data, val_labels, test_data, test_labels, num_classes
 
@@ -80,6 +79,7 @@ def create_cnn(channels, rows, columns, num_classes):
     # OUTPUT LAYER
     model.add(Flatten())
     model.add(Dense(512))
+    model.add(Activation('relu'))
     model.add(Dropout(0.4))
     model.add(Dense(256))
     model.add(Dropout(0.4))
@@ -87,7 +87,7 @@ def create_cnn(channels, rows, columns, num_classes):
     model.add(Dense(num_classes)) # The number of neurons on the output layer is always equal to the number of classes.
     model.add(Activation("softmax")) # Softmax is used for multi-class classification, sigmoid is best used for binary tasks.
 
-    optimiser = SGD(lr=0.01, momentum=0.90, decay=1e-8, nesterov=True)
+    optimiser = SGD(lr=0.01, momentum=0.90, decay=1e-6, nesterov=True)
 
     model.compile(loss="categorical_crossentropy",
                   optimizer=optimiser
@@ -103,10 +103,10 @@ def train_model(model, train_data, train_labels, val_data, val_labels):
     early_stop = EarlyStopping(monitor='val_loss', patience=50, verbose=1, mode='auto')
     if augment_data:
         data_aug = ImageDataGenerator(
-            featurewise_center=False, # set input mean to 0 over the dataset
-            samplewise_center=False, # set each sample mean to 0
-            featurewise_std_normalization=False, # divide inputs by std of the dataset
-            samplewise_std_normalization=False, # divide each input by its std
+            featurewise_center=False,  # set input mean to 0 over the dataset
+            samplewise_center=False,  # set each sample mean to 0
+            featurewise_std_normalization=False,  # divide inputs by std of the dataset
+            samplewise_std_normalization=False,  # divide each input by its std
             zca_whitening=False,
             rotation_range=0.1,
             width_shift_range=0.08,
