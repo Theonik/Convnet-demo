@@ -40,7 +40,7 @@ def load_data():
         np.random.shuffle(train_data)
         np.random.set_state(rng_state)
         np.random.shuffle(train_labels)
-        split_0 = int(train_data.shape[0]*0.2)
+        split_0 = int(train_data.shape[0]*valid_split)
         split_1 = train_data.shape[0] - split_0
         train_data, foo, val_data = np.split(train_data, [split_1, split_0])
         train_labels, foo, val_labels = np.split(train_labels, [split_1, split_0])
@@ -57,32 +57,32 @@ def create_cnn(channels, rows, columns, num_classes):
 
     # LAYER ONE
 
-    model.add(Convolution2D(8, 3, 3,
+    model.add(Convolution2D(32, 3, 3,
                             input_shape=(channels, rows, columns)
                             )
               )
     model.add(Activation('relu'))
-    model.add(Convolution2D(8, 3, 3))
+    model.add(Convolution2D(32, 3, 3))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), border_mode='valid', dim_ordering='th'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='th'))
     model.add(Dropout(0.2))
 
     # LAYER TWO
 
-    model.add(Convolution2D(14, 3, 3))
+    model.add(Convolution2D(64, 3, 3))
     model.add(Activation('relu'))
-    model.add(Convolution2D(14, 3, 3))
+    model.add(Convolution2D(64, 3, 3))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), border_mode='valid', dim_ordering='th'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='th'))
     model.add(Dropout(0.2))
 
     # OUTPUT LAYER
     model.add(Flatten())
-    model.add(Dense(512))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.4))
     model.add(Dense(256))
-    model.add(Dropout(0.4))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(128))
+    model.add(Dropout(0.3))
     model.add(Activation('relu'))
     model.add(Dense(num_classes)) # The number of neurons on the output layer is always equal to the number of classes.
     model.add(Activation("softmax")) # Softmax is used for multi-class classification, sigmoid is best used for binary tasks.
@@ -128,7 +128,7 @@ def train_model(model, train_data, train_labels, val_data, val_labels):
                   nb_epoch=num_epochs,
                   verbose=1,
                   shuffle=True,
-                  validation_split=0.20,
+                  validation_split=valid_split,
                   callbacks=[early_stop]
                   )
 
@@ -165,9 +165,11 @@ def load_model(path):
 
 
 if __name__ == "__main__":
+    valid_split = 0.15
     augment_data = True
-    greyscale = True
+    greyscale = False
     train_data, train_labels, val_data, val_labels, test_data, test_labels, num_classes = load_data()
     model = create_cnn(train_data.shape[1], train_data.shape[2], train_data.shape[3], num_classes)
     model = train_model(model, train_data, train_labels, val_data, val_labels)
     evaluate_model(model, test_data, test_labels, num_classes)
+    save_model(model, "./models/", "32-32-64-64-3x3-15pct")
