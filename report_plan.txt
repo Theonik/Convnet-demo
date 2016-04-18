@@ -1,0 +1,48 @@
+Background and Objectives
+-Introduction
+ #Summary of premise for the rest of document, what is the purpose, why are we doing this
+ 
+--Background Motivation
+  #Data-mining and searching through poorly organised images
+ 
+--Machine Learning and Pattern Recognition
+  #Briefly talk about the motivations and methods of machine learning and Pattern Recognition.
+
+-Background
+  
+--SVMs and the 'Old Guard'
+  #Talk about SVMs and alternative ML methods
+  
+--Artificial Neural Networks
+  #Introduce Neural Networks and talk about how they differ from SVMs talk about feature extraction
+  
+--Image Classification and CIFAR-10
+  #Introduce the problem of image classification and the CIFAR-10 Dataset
+  
+--Types of architectures and past successful models
+  #Present some background research into different kinds of model
+  
+---SVM, MLP, CNN
+
+--Variables and Training
+
+---Parameters to tweak
+  #Present the main parameters that are usually modified to create models for a task
+  
+---Training Strategy
+
+---Evaluation Strategies
+
+-Analysis
+--How do ANNs compare with what used to be state of the art
+--What type of ANN is best suited to the task
+--What structure of ANN is best suited to the task
+--What parameters are best suited to the task
+--Can this be applied to a product
+
+-Research Method
+--Benchmarking
+--Variables to test
+--Correlating past research
+
+
