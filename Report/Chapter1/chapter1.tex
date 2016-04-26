@@ -1,21 +1,61 @@
 \chapter{Background \& Objectives}
 
-This section should discuss your preparation for the project, including background reading, your analysis of the problem and the process or method you have followed to help structure your work.  It is likely that you will reuse part of your outline project specification, but at this point in the project you should have more to talk about. 
+\section{Introduction}
+This project is an investigation into training Artificial Neural Networks for the purpose of image classification and labelling. We will explore alternative approaches in computer vision to solve this problem arriving to the what is considered the current state of the art in machine learning comparing it to a number of different alternatives both contemporary but also historical.
 
-\textbf{Note}: 
+\subsection{Motivation}
+Perhaps the first question we might wish to ask ourselves is why we wish to embark on this project in the first place. Computer vision is field of computer science in essence involving extracting information and building models of the real world, this might involve sensors, cameras or perhaps even audio.
 
-\begin{itemize}
-   \item All of the sections and text in this example are for illustration purposes. The main Chapters are a good starting point, but the content and actual sections that you include are likely to be different.
-   
-   \item Look at the document on the Structure of the Final Report for additional guidance. 
-   
-\end {itemize}
+There are numerous applications and types of computer vision. The problem we are looking in particular is identifying images and labelling them extracting metadata from the image itself. Naturally this has many applications. Self-driving cars, search engines, and any problem where we need a computer to be able to identify images.
+
+Our interest is particularly related to image acquisition and labelling. Suppose a user has a large set of images and you are looking for a particular one. They know what it is but not its title. Or perhaps its title does not hold semantic meaning to them, but wish to search the semantics of the image itself.
+
+\subsection{Machine Learning and Pattern Recognition}
+To solve this problem computer scientists set out to devise a set of 'rules' and algorithms that were good at solving these problems. Eventually it became apparent that no single algorithm could solve the problem for all sets of cases as the 'rules' change between cases. The rules that define a cat are different than what defines a dog and so on so one would have to write rules for each edgecase. Where you needed to solve this kind of problem one would analyse the data they expect to receive and think of features they are interested in extracting. This approach is still used for some CV problems.
+
+A solution that emerged for this was machine learning $\left(ML\right)$, that is sets of algorithms that could be used to derive the rules based on data. Most machine learning algorithms work by identifying patterns in the data either via statistical analysis as in Bayesian Learning or other means. Suppose you have a set of data describing cats and dogs. Cats are small, but there is both small and large types of dogs, most cats have pointed ears while some dogs have floppy ones. A machine learning algorithm would process a set of examples of cats and dogs then derive patterns that can be used to classify them.
 
 \section{Background}
-What was your background preparation for the project? What similar systems or research techniques did you assess? What was your motivation and interest in this project? 
+\subsection{SVMs and other Machine Learning Alternatives}
+
+\subsection {Artificial Neural Networks}
+Artificial Neural Networks$\left(ANN\right)$ are a type of machine learning inspired by the way some biological organisms process stimulus and learn. In essence an ANN is a very naive emulation of a 'meat computer' with the biological processes being replaced with mathematical approximations of the actual process of biological neurons.
+
+Being that these are only approximations, they have several components which help them function and emulate select processes of real neurons.
+
+\subsubsection{Advantages and Disadvantages of ANNs}
+ANNs have many advantages and disadvantages to conventional ML methods some of the most important ones include: 
+\begin{itemize}
+	\item They do not require a feature extraction step
+	\item Can easily be applied in many different problems
+\end{itemize}
+It is possible to apply ANNs in to solve many problems by just feeding in appropriate training data and get reasonably accurate results in some cases, matching the state of the art for that problem. As for disadvantages:
+\begin{itemize}
+	\item They are difficult to train both in terms fo requirements and speed.
+	\item It is comparatively difficult to gain insight on why a neural network has learned something.
+\end{itemize}
+Recent advances in ANNs have greatly improved on both of these areas. GPU compute in particular has made training quite large neural networks practical on consumer computers. There is also very active research at the moment in improving insight and visualising neural network decisions. We will talk in more detail about all of this later in our report.
+
+\subsubsection{Datasets}
+With most methodologies having data to test against is important. With ML, data is what drives the whole process so to produce any sort of solution to this problem one needs to decide on the dataset to use. For classification problems a dataset might be a set of inputs and outputs, separated in a set to train on and a set to test performance against afterwards.
+
+For our network we are looking at datasets with actual images with associated labels. There is several of that type of image dataset, we will discuss them in more detail in a later section of this report.
 
 \section{Analysis}
-Taking into account the problem and what you learned from the background work, what was your analysis of the problem? How did your analysis help to decompose the problem into the main tasks that you would undertake? Were there alternative approaches? Why did you choose one approach compared to the alternatives? There should be a clear statement of the research questions, which you will evaluate at the end of the work. In most cases, the agreed objectives or requirements will be the result of a compromise between what would ideally have been produced and what was felt to be possible in the time available. A discussion of the process of arriving at the final list is usually appropriate.
+To complete this project we must solve a number of problems and answer a number of questions. As part of our analysis we identified some of them while several others would emerge as we embarked on our project.
+
+\subsection{Types of ML and ANN architectures used in the past}
+To start we should look at what models have been successful in the past for this kind of problem. After all this area has several decades of research behind it which we would not be able to replicate from scratch.
+
+Looking at older results also enables us to get a baseline for what our model might be capable of doing and provides goals to hit or exceed. For this report we will be looking at SVMs, Multi Layer Perceptrons $\left(MLP\right)$ and Convolutional Neural Networks $\left(CNN\right)$
+
+\subsection{Architectures of CNN}
+We need to decide on the architecture of our neural network. For CNN choices appear to be relatively simple with most networks opting for very similar architectures.
+
+\subsection{Variables to test and optimise}
+We will need to investigate different ways we can vary our model and attributes that we can change in order to limit the scope of the research area. This process involves, reading documentation for our solutions as well as research into the technology we are using to determine the highest value optimisations to make.
+
+\subsection{Are CNNs ready for market?}
+One other interesting question to answer as a conclusion is whether CNNs are ready to be deployed in commercial products and services. Is it possible to produce something robust enough for such uses?
 
 \section{Research Method}
-You need to describe briefly the life cycle model or research method that you used. You do not need to write about all of the different process models that you are aware of. Focus on the process model or research method that you have used. It is possible that you needed to adapt an existing method to suit your project; clearly identify what you used and how you adapted it for your needs.

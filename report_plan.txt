@@ -44,5 +44,6 @@ Background and Objectives
 --Benchmarking
 --Variables to test
 --Correlating past research
-
+--Visualising learned features
+--Visualising trained network
 
