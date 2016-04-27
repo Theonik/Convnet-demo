@@ -65,8 +65,6 @@ def create_cnn(channels, rows, columns, num_classes):
     model.add(Activation('relu'))
     model.add(Convolution2D(128, 3, 3))
     model.add(Activation('relu'))
-    model.add(Convolution2D(128, 3, 3))
-    model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='th'))
     model.add(Dropout(0.2))
 
@@ -76,16 +74,11 @@ def create_cnn(channels, rows, columns, num_classes):
     model.add(Activation('relu'))
     model.add(Convolution2D(256, 3, 3))
     model.add(Activation('relu'))
-    model.add(Convolution2D(256, 3, 3))
-    model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='th'))
     model.add(Dropout(0.2))
 
     # OUTPUT LAYER
     model.add(Flatten())
-    model.add(Dense(512))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.3))
     model.add(Dense(256))
     model.add(Activation('relu'))
     model.add(Dropout(0.3))
@@ -192,4 +185,4 @@ if __name__ == "__main__":
     model = train_model(model, train_data, train_labels, val_data, val_labels)
     model.load_weights(check_path)
     evaluate_model(model, test_data, test_labels, num_classes)
-    save_model(model, "./models/", "128-128-128-256-256-256-3x3-15pct-no-strides-color")
+    save_model(model, "./models/", "128-128-256-256-3x3-15pct-no-strides-color")
