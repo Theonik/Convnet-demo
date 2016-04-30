@@ -1,94 +1,45 @@
 \chapter{Code Examples}
 
-\section{Random Number Generator}
+\section{Colour Conversion}
 
-The Bayes Durham Shuffle ensures that the psuedo random numbers used in the simulation are further shuffled, ensuring minimal correlation between subsequent random outputs \cite{NumericalRecipes}.
+This code enables conversion between RGB channel intensities into greyscale luminance using different conversion methods based on their respective colourspace recommendations in a variety of modes.
 
-\begin{verbatim}
- #define IM1 2147483563
- #define IM2 2147483399
- #define AM (1.0/IM1)
- #define IMM1 (IM1-1)
- #define IA1 40014
- #define IA2 40692 
- #define IQ1 53668
- #define IQ2 52774
- #define IR1 12211
- #define IR2 3791
- #define NTAB 32
- #define NDIV (1+IMM1/NTAB)
- #define EPS 1.2e-7
- #define RNMX (1.0 - EPS)
- 
- double ran2(long *idum)
- {
-   /*---------------------------------------------------*/
-   /* Minimum Standard Random Number Generator          */
-   /* Taken from Numerical recipies in C                */
-   /* Based on Park and Miller with Bays Durham Shuffle */
-   /* Coupled Schrage methods for extra periodicity     */
-   /* Always call with negative number to initialise    */
-   /*---------------------------------------------------*/	
- 
-   int j;
-   long k;
-   static long idum2=123456789;
-   static long iy=0;
-   static long iv[NTAB];
-   double temp;
- 
-   if (*idum <=0)
-   {
-     if (-(*idum) < 1)
-     {
-       *idum = 1;
-     }else
-     {
-       *idum = -(*idum);
-     }
-     idum2=(*idum);
-     for (j=NTAB+7;j>=0;j--)
-     {
-       k = (*idum)/IQ1;
-       *idum = IA1 *(*idum-k*IQ1) - IR1*k;
-       if (*idum < 0)
-       {
-         *idum += IM1;
-       }
-       if (j < NTAB)
-       {
-         iv[j] = *idum;
-       }
-     }
-     iy = iv[0];	
-   }
-   k = (*idum)/IQ1;
-   *idum = IA1*(*idum-k*IQ1) - IR1*k;
-   if (*idum < 0)
-   {
-     *idum += IM1;
-   }
-   k = (idum2)/IQ2;
-   idum2 = IA2*(idum2-k*IQ2) - IR2*k;
-   if (idum2 < 0)
-   {
-     idum2 += IM2;
-   }
-   j = iy/NDIV;
-   iy=iv[j] - idum2;
-   iv[j] = *idum;
-   if (iy < 1)
-   {
-     iy += IMM1;
-   }
-   if ((temp=AM*iy) > RNMX)
-   {
-     return RNMX;
-   }else
-   {
-     return temp;	
-   }
- }
- 
-\end{verbatim}
+\begin{lstlisting}
+import numpy as np
+from math import sqrt
 
+def convert_set_to_greyscale(cifar_set, method=0, gamma=1.0):
+	converted_set = np.empty((cifar_set.shape[0], 1, cifar_set.shape[2], cifar_set.shape[3]), 'float32')
+	for image_index, image in enumerate(cifar_set):
+		for row_index, row in enumerate(image[0]):
+			for pixel_index, pixel in enumerate(row):
+			grey = 0.0
+			if method == 0:  # Rec.709 luminance
+				grey = (0.2126 * cifar_set[image_index, 0, row_index, pixel_index]) + \
+				(0.7152 * cifar_set[image_index, 1, row_index, pixel_index]) + \
+				(0.0722 * cifar_set[image_index, 2, row_index, pixel_index])
+			elif method == 1:  # NTSC/W3C luminance
+				grey = (0.299 * cifar_set[image_index, 0, row_index, pixel_index]) + \
+				(0.587 * cifar_set[image_index, 1, row_index, pixel_index]) + \
+				(0.114 * cifar_set[image_index, 2, row_index, pixel_index])
+			elif method == 2:
+				grey = sqrt(((0.299 * cifar_set[image_index, 0, row_index, pixel_index]) ** 2) +
+				((0.587 * cifar_set[image_index, 1, row_index, pixel_index]) ** 2) +
+				((0.114 * cifar_set[image_index, 2, row_index, pixel_index]) ** 2))
+			elif method == 3:
+				grey = sqrt(((0.2126 * cifar_set[image_index, 0, row_index, pixel_index]) ** 2) +
+				((0.7152 * cifar_set[image_index, 1, row_index, pixel_index]) ** 2) +
+				((0.0722 * cifar_set[image_index, 2, row_index, pixel_index]) ** 2))
+			elif method == 4:  # Simple mean of RGB
+				grey = ((cifar_set[image_index, 0, row_index, pixel_index]) +
+				(cifar_set[image_index, 1, row_index, pixel_index]) +
+				(cifar_set[image_index, 2, row_index, pixel_index])) / 3
+			else:
+				print 'Error: This is not a valid conversion mode.\n Reverting to colour.'
+			return cifar_set.astype('float32') / 255
+		
+		converted_set[image_index, 0, row_index, pixel_index] = np.float32(grey/255)
+	print 'Converted ', len(converted_set), ' images to greyscale.'
+	return converted_set
+ 
+\end{lstlisting}
