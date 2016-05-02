@@ -23,7 +23,7 @@ def convert_set_to_greyscale(cifar_set, method=0, gamma=1.0):
                     grey = sqrt(((0.2126 * cifar_set[image_index, 0, row_index, pixel_index]) ** 2) +
                                 ((0.7152 * cifar_set[image_index, 1, row_index, pixel_index]) ** 2) +
                                 ((0.0722 * cifar_set[image_index, 2, row_index, pixel_index]) ** 2))
-                elif method == 4:  # Simple mean of RGB
+                elif method == 4:  # Simple mean of RGB intensity
                     grey = ((cifar_set[image_index, 0, row_index, pixel_index]) +
                             (cifar_set[image_index, 1, row_index, pixel_index]) +
                             (cifar_set[image_index, 2, row_index, pixel_index])) / 3

@@ -9,8 +9,7 @@ os.environ["THEANO_FLAGS"] = "mode=FAST_RUN,device=gpu,floatX=float32"
 from keras.datasets import cifar10
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential, model_from_json
-from keras.layers.core import Dense, Dropout, Activation, Flatten
-from keras.layers.convolutional import Convolution2D, MaxPooling2D
+from keras.layers.core import Dense, Dropout, Activation
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.optimizers import SGD
 
@@ -29,10 +28,14 @@ def load_data():
 
     if greyscale:
         train_data = utils.convert_set_to_greyscale(train_data, 2)
+        train_data = train_data.reshape((train_data.shape[0]), (train_data.shape[2])*(train_data.shape[3]))
         test_data =  utils.convert_set_to_greyscale(test_data, 2)
+        test_data = test_data.reshape((test_data.shape[0]), (test_data.shape[2]) * (test_data.shape[3]))
     else:
-        train_data = train_data.astype('float32') / 255
-        test_data = test_data.astype('float32') / 255
+        train_data = train_data.reshape(train_data.shape[0],
+                                        (train_data.shape[1] * train_data.shape[2] * train_data.shape[3])).astype("float32") / 255
+        test_data = test_data.reshape(test_data.shape[0],
+                                      (test_data.shape[1] * test_data.shape[2] * test_data.shape[3])).astype("float32") / 255
 
     val_data = None
     val_labels = None
@@ -53,41 +56,38 @@ def load_data():
     return train_data, train_labels, val_data, val_labels, test_data, test_labels, num_classes
 
 
-def create_cnn(channels, rows, columns, num_classes):
+def create_mlp(num_inputs, num_classes):
 
     model = Sequential()
 
     # LAYER ONE
 
-    model.add(Convolution2D(24, 5, 5,
-                            input_shape=(channels, rows, columns)
-                            )
-              )
-    model.add(Activation('relu'))
-    model.add(Convolution2D(24, 5, 5))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='th'))
+    model.add(Dense(512,
+                    input_shape=(num_inputs,)
+                    ))
+    model.add(Activation("relu"))
     model.add(Dropout(0.2))
 
     # LAYER TWO
 
-    model.add(Convolution2D(48, 5, 5))
-    model.add(Activation('relu'))
-    model.add(Convolution2D(48, 5, 5))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='th'))
+    model.add(Dense(512))
+    model.add(Activation("relu"))
     model.add(Dropout(0.2))
 
-    # OUTPUT LAYER
-    model.add(Flatten())
     model.add(Dense(256))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.3))
+    model.add(Activation("relu"))
+    model.add(Dropout(0.2))
+
     model.add(Dense(128))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.3))
-    model.add(Dense(num_classes)) # The number of neurons on the output layer is always equal to the number of classes.
-    model.add(Activation("softmax")) # Softmax is used for multi-class classification, sigmoid is best used for binary tasks.
+    model.add(Activation("relu"))
+    model.add(Dropout(0.2))
+
+
+
+    # OUTPUT
+
+    model.add(Dense(num_classes))
+    model.add(Activation("softmax"))
 
     optimiser = SGD(lr=0.01, momentum=0.90, decay=1e-6, nesterov=True)
 
@@ -100,10 +100,10 @@ def create_cnn(channels, rows, columns, num_classes):
 
 def train_model(model, train_data, train_labels, val_data, val_labels):
     batch_size = 128
-    num_epochs = 10
+    num_epochs = 3000
     print ("If the model does not overfit both loss numbers should go down down down")
     early_stop = EarlyStopping(monitor='val_loss', patience=50, verbose=1, mode='auto')
-    checkpoint = ModelCheckpoint(check_path,monitor='val_loss', verbose=0, save_best_only=True)
+    checkpoint = ModelCheckpoint(check_path, monitor='val_loss', verbose=0, save_best_only=True)
     if augment_data:
         data_aug = ImageDataGenerator(
             featurewise_center=False,  # set input mean to 0 over the dataset
@@ -188,14 +188,14 @@ def predict_image(path, model):
 if __name__ == "__main__":
     valid_split = 0.15
     check_path = './temp.h5'
-    augment_data = True
+    augment_data = False
     greyscale = False
     train_data, train_labels, val_data, val_labels, test_data, test_labels, num_classes = load_data()
     lookup_labels = ['airplane', 'automobile', 'bird', 'cat',
                      'deer', 'dog', 'frog',
                      'horse', 'ship', 'truck']
-    model = create_cnn(train_data.shape[1], train_data.shape[2], train_data.shape[3], num_classes)
+    model = create_mlp(train_data.shape[1], num_classes)
     model = train_model(model, train_data, train_labels, val_data, val_labels)
     model.load_weights(check_path)
     evaluate_model(model, test_data, test_labels, num_classes)
-    save_model(model, "./models/", "24-24-48-48-5x5-15pct-no-strides-color")
+    save_model(model, "./models/", "mlp-512-512-256-128")

@@ -1,11 +1,12 @@
 import numpy as np
+import matplotlib as plot
 #import cv2 as ocv
 import argparse
 import os
 import utils
 os.environ["THEANO_FLAGS"] = "mode=FAST_RUN,device=gpu,floatX=float32"
 
-from keras.datasets import cifar10
+from keras.datasets import cifar100
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential, model_from_json
 from keras.layers.core import Dense, Dropout, Activation, Flatten
@@ -19,7 +20,7 @@ from sklearn.metrics import confusion_matrix, classification_report
 
 
 def load_data():
-    (train_data, train_labels), (test_data, test_labels) = cifar10.load_data()
+    (train_data, train_labels), (test_data, test_labels) = cifar100.load_data()
 
     ll = set()
     for label in train_labels:
@@ -58,21 +59,21 @@ def create_cnn(channels, rows, columns, num_classes):
 
     # LAYER ONE
 
-    model.add(Convolution2D(128, 3, 3,
+    model.add(Convolution2D(48, 3, 3,
                             input_shape=(channels, rows, columns)
                             )
               )
     model.add(Activation('relu'))
-    model.add(Convolution2D(128, 3, 3))
+    model.add(Convolution2D(48, 3, 3))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='th'))
     model.add(Dropout(0.2))
 
     # LAYER TWO
 
-    model.add(Convolution2D(256, 3, 3))
+    model.add(Convolution2D(64, 3, 3))
     model.add(Activation('relu'))
-    model.add(Convolution2D(256, 3, 3))
+    model.add(Convolution2D(64, 3, 3))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='th'))
     model.add(Dropout(0.2))
@@ -145,11 +146,20 @@ def evaluate_model(model, test_data, test_labels, num_classes):
 
     print (classification_report(test_labels, predicted_classes))
 
+def generate_reports(path, test_data, test_labels):
+    for model_file in os.listdir(path):
+        if model_file.endswith('.json'):
+            eval_model = load_model(os.path.basename(model_file))
+            predicted_classes = eval_model.predict_classes(test_data, verbose=0).tolist()
+            cm = confusion_matrix(test_labels, predicted_classes, )
+
+#def plot_confusion_matrix(cm, cmap=plot.cm.Blues, labels):
+
 
 def save_model(model, path='./models/', name='model'):
     json_string = model.to_json()
     open(path + name + '.json', 'w').write(json_string)
-    model.save_weights(path + name + '_weights.h5')
+    #model.save_weights(path + name + '_weights.h5')
 
 
 def export_model(model, path='./models/', name='model'):
@@ -181,8 +191,11 @@ if __name__ == "__main__":
     augment_data = True
     greyscale = False
     train_data, train_labels, val_data, val_labels, test_data, test_labels, num_classes = load_data()
+    lookup_labels = ['airplane', 'automobile', 'bird', 'cat',
+                     'deer', 'dog', 'frog',
+                     'horse', 'ship', 'truck']
     model = create_cnn(train_data.shape[1], train_data.shape[2], train_data.shape[3], num_classes)
     model = train_model(model, train_data, train_labels, val_data, val_labels)
     model.load_weights(check_path)
     evaluate_model(model, test_data, test_labels, num_classes)
-    save_model(model, "./models/", "128-128-256-256-3x3-15pct-no-strides-color")
+    save_model(model, "./models/", "48-48-64-64-15pct-no-strides-color-CIFAR100")
