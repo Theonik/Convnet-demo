@@ -138,7 +138,7 @@ def train_model(model, train_data, train_labels, val_data, val_labels):
     return model
 
 
-def evaluate_model(model, test_data, test_labels, num_classes):
+def evaluate_model(model, test_data, test_labels, path, num_classes):
 
     predicted_classes = model.predict_classes(test_data, verbose=0).tolist()
 
@@ -226,6 +226,8 @@ def predict_image(path, model):
 if __name__ == "__main__":
     valid_split = 0.15
     check_path = './temp.h5'
+    model_path = './models'
+    model_name = "48-48-96-96-15pct-no-strides-color-no_aug"
     augment_data = False
     greyscale = False
     train_data, train_labels, val_data, val_labels, test_data, test_labels, num_classes = load_data()
@@ -237,4 +239,4 @@ if __name__ == "__main__":
     model = train_model(model, train_data, train_labels, val_data, val_labels)
     model.load_weights(check_path)
     evaluate_model(model, test_data, test_labels, num_classes)
-    save_model(model, "./models/", "48-48-96-96-15pct-no-strides-color-no_aug")
+    save_model(model, model_path, model_name)
