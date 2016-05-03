@@ -1,12 +1,12 @@
 import numpy as np
-import matplotlib as plot
+import matplotlib.pyplot as plot
 #import cv2 as ocv
 import argparse
 import os
 import utils
 os.environ["THEANO_FLAGS"] = "mode=FAST_RUN,device=gpu,floatX=float32"
 
-from keras.datasets import cifar100
+from keras.datasets import cifar10
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential, model_from_json
 from keras.layers.core import Dense, Dropout, Activation, Flatten
@@ -20,7 +20,7 @@ from sklearn.metrics import confusion_matrix, classification_report
 
 
 def load_data():
-    (train_data, train_labels), (test_data, test_labels) = cifar100.load_data()
+    (train_data, train_labels), (test_data, test_labels) = cifar10.load_data()
 
     ll = set()
     for label in train_labels:
@@ -100,7 +100,7 @@ def create_cnn(channels, rows, columns, num_classes):
 
 def train_model(model, train_data, train_labels, val_data, val_labels):
     batch_size = 128
-    num_epochs = 3000
+    num_epochs = 5000
     print ("If the model does not overfit both loss numbers should go down down down")
     early_stop = EarlyStopping(monitor='val_loss', patience=50, verbose=1, mode='auto')
     checkpoint = ModelCheckpoint(check_path,monitor='val_loss', verbose=0, save_best_only=True)
@@ -142,6 +142,16 @@ def evaluate_model(model, test_data, test_labels, num_classes):
 
     predicted_classes = model.predict_classes(test_data, verbose=0).tolist()
 
+    f = open(path + '/' + os.path.splitext(model_file)[0] + '_report.txt', 'w')
+    f.write(classification_report(test_labels, predicted_classes))
+    f.close()
+    f = open(path + '/' + os.path.splitext(model_file)[0] + '_matrix.txt', 'w')
+    f.write(str(cm))
+    f.close()
+    f = open(path + '/' + os.path.splitext(model_file)[0] + '_normal_matrix.txt', 'w')
+    f.write(str(cm_normalized))
+    f.close()
+
     print (confusion_matrix(test_labels, predicted_classes))
 
     print (classification_report(test_labels, predicted_classes))
@@ -149,17 +159,45 @@ def evaluate_model(model, test_data, test_labels, num_classes):
 def generate_reports(path, test_data, test_labels):
     for model_file in os.listdir(path):
         if model_file.endswith('.json'):
-            eval_model = load_model(os.path.basename(model_file))
+            print 'loading report for ' + model_file
+            eval_model = load_model(path + '/' + os.path.splitext(model_file)[0])
             predicted_classes = eval_model.predict_classes(test_data, verbose=0).tolist()
-            cm = confusion_matrix(test_labels, predicted_classes, )
+            cm = confusion_matrix(test_labels, predicted_classes)
+            plot_confusion_matrix(cm, lookup_labels, path + '/' + os.path.splitext(model_file)[0])
+            cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+            plot_confusion_matrix(cm_normalized, lookup_labels, path + '/' + os.path.splitext(model_file)[0] + '_normalized')
+            f = open(path + '/' + os.path.splitext(model_file)[0] + '_report.txt', 'w')
+            f.write(classification_report(test_labels, predicted_classes))
+            f.close()
+            f = open(path + '/' + os.path.splitext(model_file)[0] + '_matrix.txt', 'w')
+            f.write(str(cm))
+            f.close()
+            f = open(path + '/' + os.path.splitext(model_file)[0] + '_normal_matrix.txt', 'w')
+            f.write(str(cm_normalized))
+            f.close()
+            print 'generated report for ' + model_file
 
-#def plot_confusion_matrix(cm, cmap=plot.cm.Blues, labels):
 
+
+def plot_confusion_matrix(cm, labels, filename, cmap=plot.cm.Blues):
+    figure = plot.figure()
+    plot.imshow(cm, interpolation='nearest', cmap=cmap)
+    plot.title('Confusion Matrix')
+    plot.colorbar()
+    tick_marks = np.arange(len(labels))
+    plot.xticks(tick_marks, labels, rotation=45)
+    plot.yticks(tick_marks, labels)
+    plot.ylabel('True label')
+    plot.xlabel('Predicted label')
+    plot.tight_layout()
+    plot.savefig(filename + '_confusion_matrix.png')
+
+def plot_():
 
 def save_model(model, path='./models/', name='model'):
     json_string = model.to_json()
     open(path + name + '.json', 'w').write(json_string)
-    #model.save_weights(path + name + '_weights.h5')
+    model.save_weights(path + name + '_weights.h5')
 
 
 def export_model(model, path='./models/', name='model'):
@@ -188,14 +226,15 @@ def predict_image(path, model):
 if __name__ == "__main__":
     valid_split = 0.15
     check_path = './temp.h5'
-    augment_data = True
+    augment_data = False
     greyscale = False
     train_data, train_labels, val_data, val_labels, test_data, test_labels, num_classes = load_data()
     lookup_labels = ['airplane', 'automobile', 'bird', 'cat',
                      'deer', 'dog', 'frog',
                      'horse', 'ship', 'truck']
+    #generate_reports('./models', test_data, test_labels)
     model = create_cnn(train_data.shape[1], train_data.shape[2], train_data.shape[3], num_classes)
     model = train_model(model, train_data, train_labels, val_data, val_labels)
     model.load_weights(check_path)
     evaluate_model(model, test_data, test_labels, num_classes)
-    save_model(model, "./models/", "48-48-64-64-15pct-no-strides-color-CIFAR100")
+    save_model(model, "./models/", "48-48-96-96-15pct-no-strides-color-no_aug")
