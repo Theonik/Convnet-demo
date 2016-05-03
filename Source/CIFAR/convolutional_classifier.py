@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plot
-#import cv2 as ocv
-import argparse
+# import cv2 as ocv
+# import argparse
 import os
 import utils
 os.environ["THEANO_FLAGS"] = "mode=FAST_RUN,device=gpu,floatX=float32"
@@ -71,9 +71,9 @@ def create_cnn(channels, rows, columns, num_classes):
 
     # LAYER TWO
 
-    model.add(Convolution2D(64, 3, 3))
+    model.add(Convolution2D(96, 3, 3))
     model.add(Activation('relu'))
-    model.add(Convolution2D(64, 3, 3))
+    model.add(Convolution2D(96, 3, 3))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=None, border_mode='valid', dim_ordering='th'))
     model.add(Dropout(0.2))
@@ -118,43 +118,51 @@ def train_model(model, train_data, train_labels, val_data, val_labels):
             vertical_flip=False,
         )
         data_aug.fit(train_data)
-        model.fit_generator(data_aug.flow(train_data, train_labels, batch_size=batch_size, shuffle=True),
-                            samples_per_epoch=train_data.shape[0],
-                            nb_epoch=num_epochs,
-                            verbose=1,
-                            validation_data=(val_data, val_labels),
-                            callbacks=[early_stop, checkpoint]
-                            )
+        hist = model.fit_generator(data_aug.flow(train_data, train_labels, batch_size=batch_size, shuffle=True),
+                                   samples_per_epoch=train_data.shape[0],
+                                   nb_epoch=num_epochs,
+                                   verbose=1,
+                                   validation_data=(val_data, val_labels),
+                                   callbacks=[early_stop, checkpoint]
+                                   )
     else:
-        model.fit(train_data, train_labels,
-                  batch_size=batch_size,
-                  nb_epoch=num_epochs,
-                  verbose=1,
-                  shuffle=True,
-                  validation_split=valid_split,
-                  callbacks=[early_stop]
-                  )
+        hist = model.fit(train_data, train_labels,
+                         batch_size=batch_size,
+                         nb_epoch=num_epochs,
+                         verbose=1,
+                         shuffle=True,
+                         validation_split=valid_split,
+                         callbacks=[early_stop, checkpoint]
+                         )
 
-    return model
+    return model, hist
 
 
-def evaluate_model(model, test_data, test_labels, path, num_classes):
+def evaluate_model(model, hist, test_data, test_labels, path='./models', name='network'):
 
     predicted_classes = model.predict_classes(test_data, verbose=0).tolist()
+    cm = confusion_matrix(test_labels, predicted_classes)
+    cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    cr = classification_report(test_labels, predicted_classes)
 
-    f = open(path + '/' + os.path.splitext(model_file)[0] + '_report.txt', 'w')
-    f.write(classification_report(test_labels, predicted_classes))
+    plot_confusion_matrix(cm, lookup_labels, path + '/' + name)
+    plot_confusion_matrix(cm_normalized, lookup_labels, path + '/' + name + '_normalized')  # Save Normalised Confusion plot
+    plot_learning_rate(hist, path + '/' + name)  # Save history plot
+    # save reports
+    f = open(path + '/' + name + '_report.txt', 'w')
+    f.write(cr)
     f.close()
-    f = open(path + '/' + os.path.splitext(model_file)[0] + '_matrix.txt', 'w')
+    f = open(path + '/' + name + '_matrix.txt', 'w')
     f.write(str(cm))
     f.close()
-    f = open(path + '/' + os.path.splitext(model_file)[0] + '_normal_matrix.txt', 'w')
+    f = open(path + '/' + name + '_normal_matrix.txt', 'w')
     f.write(str(cm_normalized))
     f.close()
 
-    print (confusion_matrix(test_labels, predicted_classes))
+    print (cm)
 
-    print (classification_report(test_labels, predicted_classes))
+    print (cr)
+
 
 def generate_reports(path, test_data, test_labels):
     for model_file in os.listdir(path):
@@ -178,7 +186,6 @@ def generate_reports(path, test_data, test_labels):
             print 'generated report for ' + model_file
 
 
-
 def plot_confusion_matrix(cm, labels, filename, cmap=plot.cm.Blues):
     figure = plot.figure()
     plot.imshow(cm, interpolation='nearest', cmap=cmap)
@@ -192,17 +199,27 @@ def plot_confusion_matrix(cm, labels, filename, cmap=plot.cm.Blues):
     plot.tight_layout()
     plot.savefig(filename + '_confusion_matrix.png')
 
-def plot_():
 
-def save_model(model, path='./models/', name='model'):
+def plot_learning_rate(hist, filename):
+    figure = plot.figure()
+    plot.title("Categorical Crossentropy Loss")
+    plot.plot(hist.history["loss"], "b-", label="training loss")
+    plot.plot(hist.history["val_loss"], "g-", label="validation loss")
+    plot.legend()
+    plot.xlabel("Epochs")
+    plot.tight_layout()
+    plot.savefig(filename + '_learning_rate.png')
+
+
+def save_model(model, path='./models', name='model'):
     json_string = model.to_json()
     open(path + name + '.json', 'w').write(json_string)
-    model.save_weights(path + name + '_weights.h5')
+    model.save_weights(path + '/' + name + '_weights.h5')
 
 
-def export_model(model, path='./models/', name='model'):
+def export_model(model, path='./models', name='model'):
     json_string = model.to_json()
-    open(path + name + '.json', 'w').write(json_string)
+    open(path + '/' + name + '.json', 'w').write(json_string)
 
 
 def load_model(path):
@@ -225,18 +242,18 @@ def predict_image(path, model):
 
 if __name__ == "__main__":
     valid_split = 0.15
+    augment_data = True
+    greyscale = True
     check_path = './temp.h5'
     model_path = './models'
-    model_name = "48-48-96-96-15pct-no-strides-color-no_aug"
-    augment_data = False
-    greyscale = False
+    model_name = "48-48-96-96-15pct-no-strides"
     train_data, train_labels, val_data, val_labels, test_data, test_labels, num_classes = load_data()
     lookup_labels = ['airplane', 'automobile', 'bird', 'cat',
                      'deer', 'dog', 'frog',
                      'horse', 'ship', 'truck']
     #generate_reports('./models', test_data, test_labels)
     model = create_cnn(train_data.shape[1], train_data.shape[2], train_data.shape[3], num_classes)
-    model = train_model(model, train_data, train_labels, val_data, val_labels)
+    model, history = train_model(model, train_data, train_labels, val_data, val_labels)
     model.load_weights(check_path)
-    evaluate_model(model, test_data, test_labels, num_classes)
+    evaluate_model(model, history, test_data, test_labels, model_path, model_name)
     save_model(model, model_path, model_name)

@@ -17,6 +17,9 @@ A solution that emerged for this was machine learning $\left(ML\right)$, that is
 
 \section{Background}
 \subsection{SVMs and other Machine Learning Alternatives}
+To use an SVM and most other ML methodologies you begin by extracting the features you wish to learn from. If for example you are looking at a shape classifier you would begin by considering what defines your classes. For this example perhaps the number of edges might be a feature, perhaps the relative length of each straight edge, or maybe the number of detected straight edges.
+
+These can be extracted from an image using computer vision techniques, or in principle, machine learning would be used in a table of features that have already been extracted. Extracting features can be quite challenging on its own and can take a lot of effort. Having extracted the features however it is easy to gain insight on the decisions a ML algorithm makes.
 
 \subsection {Artificial Neural Networks}
 Artificial Neural Networks$\left(ANN\right)$ are a type of machine learning inspired by the way some biological organisms process stimulus and learn. In essence an ANN is a very naive emulation of a 'meat computer' with the biological processes being replaced with mathematical approximations of the actual process of biological neurons.
@@ -49,10 +52,9 @@ To start we should look at what models have been successful in the past for this
 
 Looking at older results also enables us to get a baseline for what our model might be capable of doing and provides goals to hit or exceed. For this report we will be looking at SVMs, Multi Layer Perceptrons $\left(MLP\right)$ and Convolutional Neural Networks $\left(CNN\right)$
 
-\subsection{Architectures of CNN}
-We need to decide on the architecture of our neural network. For CNN choices appear to be relatively simple with most networks opting for very similar architectures.
-
 \subsection{Variables to test and optimise}
+We need to decide on the architecture of our neural network. For CNN choices appear to be relatively simple with most networks opting for very similar architectures. However there is still aspects that can be varied.
+
 We will need to investigate different ways we can vary our model and attributes that we can change in order to limit the scope of the research area. This process involves, reading documentation for our solutions as well as research into the technology we are using to determine the highest value optimisations to make.
 
 \subsection{Are CNNs ready for market?}
