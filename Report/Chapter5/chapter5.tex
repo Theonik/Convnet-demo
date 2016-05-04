@@ -1,18 +1,37 @@
 \chapter{Critical Evaluation}
 
-Examiners expect to find in your dissertation a section addressing such questions as:
+\section{Identification of requirements}
+We believe we made a good effort at identifying requirements for this project. All the issues we identified at the start was addressed and the project was brought to a conclusion. However we feel that perhaps we may have misjudged the scope of the project.
 
-\begin{itemize}
-   \item Were the requirements correctly identified? 
-   \item Were the design decisions correct?
-   \item Could a more suitable set of tools have been chosen?
-   \item How well did the software meet the needs of those who were expecting to use it?
-   \item How well were any other project aims achieved?
-   \item If you were starting again, what would you do differently?
-\end{itemize}
+We were originally hoping to have the ANN part to only be 90 percent of the project with the rest being dedicated to creating practical demo applications with it. In the end 100 percent ended up being the CNN analysis
 
-Such material is regarded as an important part of the dissertation; it should demonstrate that you are capable not only of carrying out a piece of work but also of thinking critically about how you did it and how you might have done it better. This is seen as an important part of an honours degree. 
+We got some of the hooks for third part interaction which was out initial goal so at the very least we were partially successful here.
 
-There will be good things and room for improvement with any project. As you write this section, identify and discuss the parts of the work that went well and also consider ways in which the work could be improved. 
+Ultimately the project was designed to be decomposable to different sub projects that I feel worked well enough in modularizing requirements and each stage had a correct set of requirements. We failed in terms of planning and some features were implemented later than we needed them. The overhead of running tests meant that some things needed to be done early
 
-Review the discussion on the Evaluation section from the lectures. A recording is available on Blackboard. 
+\section{Design}
+Design was evolutionary so it was more about the design of the processes. I feel the process worked well when it was adhered to but there was a feeling of lack of direction which contributed to keep the project somewhat vague until every aspect was worked out.
+
+It is a difficult topic, which made sizing quite unreliable and literature is fairly scarce and directed at researchers.
+
+\section{Choice of Tools and Language}
+We lamented long and hard over the choice of framework. We'd have originally preferred to use Tensor Flow but Keras worked very well. We intended to use Python from the start so it working out i was a good surprise.
+
+Ultimately I don't feel there was anything that could be improved given external factors and the timing of the project. The landscape is much different today than it was when the project was started which is common with alpha software.
+
+\section{How Well were the needs met}
+The software provided all the features we wanted from our investigation in the end. There were small things that could be added but ultimately I feel we implemented just enough comfort for the final scope of the project.
+
+Ultimately the original scope was larger than what was expected from this project given the time and complexity of the subject matter. There is enough material to continue development in new areas. Visualisation was a big disappointment since we wished to include it in the report initially but plans had to be changed.
+
+\section{Regrets}
+Some of the more ambitious plans relied on some circumstances coming into play that did not, we suffered a major hardware failure near the start of the project that delayed progress immensely, after this restoration ate into all our contingency time and some of the equipment we wished to acquire was also delayed.
+
+We ultimately should have asked for department resources sooner as those helped tide us over duting the mid-project demo for instance. Biggest thing I would have changed was to ask for HPC access from the start since we could have done much more if we had access to these resources.
+
+\section{The Future of the Project}
+The future of this project would at least include all original aims. We would like to have the visualisation and interface features as well as the extra statistic tools.
+
+Later on the big project that this was created to prepare for can start. We would like to train this model on a new dataset we have been working on which consists of a reduced set of 500,000 fan drawn images, the ultimate goal is multi-label, hierarchical, associative tag inference and classification for drawn imagery where we can identify characters, origins, and themes as provided in labels.
+
+This technology can then be integrated in our intelligent web crawler to filter incoming images.
