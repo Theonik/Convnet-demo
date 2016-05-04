@@ -69,10 +69,20 @@ What we needed was a way to drive quick prototyping and creative experimentation
 
 In our 'creative experimentation' process, we incorporate the concept of a sprint, but since we expect to go through a small iteration daily we restrict time to the equivalent of a weekly sprint. Because we lack customers and a product owner we replace them with our supervisor reporting progress after each week's sprint. The discussion is used to drive the direction and goals of the next sprint.
 
-We are also using a form of continuous integration to deploy our changes, and GIT source control to track changes and experiments. We evaluate progress based on feedback from results and from milestones at the end of each 'sprint'.
+\begin{wrapfigure}{r}{0.2\textwidth}
+	\begin{center}
+		\includegraphics[width=0.18\textwidth]{hard_work_and_guts_programming}
+	\end{center}
+	\caption{A Prety Soldier of Hard Word and Guts: Takaya Noriko}
+	\label{hwng}
+\end{wrapfigure}
+
+We are also using a form of continuous integration to deploy our changes, and GIT source control to track changes and experiments. We evaluate progress based on feedback from results and from milestones at the end of each 'sprint'. We considered Github issues as well but the were considered superfluous. Polyvinyl Carbonate Figure Debugging was implemented however. See fig. \ref{hwng}
 
 The overall lifecycle looks like this. First few cycles are exclusively dedicated to research and coming up with a set of requirements for the test infrastructure and programs that need to be developed to drive the project. After this we focus on designing and testing models with the aid of the basic software we designed in stage 1. New features will be added as needed to advance the project. Data loading, performance monitoring visualisation etc.
 
 For experiments we begin to identify the variables and results we wish to test e.g. size of convolutional filters, then we identify the pre-requisites to run the tests. i.e. do we have the framework to run the experiment, and of course the desired data and whether we can extract them. For the third one we found that there was no need to add more output to run some experiments in our scope. Based on the results of an experiment we decide on what other experiments to run afterwards. Since experiments can take many hours to run we need to plan a maximum of 2 experiments a day with a expectation of perhaps doing less on some days or more on others.
 
 Finally we planned some basic overall schedule we use in 3 major milestones, research, implementation and writeup. Adjustments were to be made based on progress, initial planning was to use 2 weeks for research 6 weeks for experiments and additional research as needed and 4 weeks for the report.
+
+We have decided to name this methodology 'Hard Work and Guts Programming'. In the spirit of this, we are using this figurine of Takaya Noriko from the 1988 OVA 'Aim for the Top! Gunbuster' as poster child and rubber duck debugging surrogate $\left( fig. \ref{hwng} \right)$
